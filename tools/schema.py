@@ -14,8 +14,7 @@ from langchain.tools import BaseTool, ToolRuntime
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import Runnable
 
-from context import build_standard_chat_prompt_template, Context
-
+from context import Context, build_standard_chat_prompt_template
 
 SCHEMA_SYSTEM_PROMPT = dedent("""
 # Role
@@ -127,10 +126,10 @@ class SchemaTool(BaseTool):
             stdout_capture = io.StringIO()
             try:
                 with redirect_stdout(stdout_capture):
-                    exec(code, {"__builtins__": __builtins__})
+                    exec(code, {"__builtins__": __builtins__})  # noqa: S102
                 output = stdout_capture.getvalue()
-            except Exception as e:
-                output = f"EXECUTION ERROR: {str(e)}"
+            except Exception as e:  # noqa: BLE001
+                output = f"EXECUTION ERROR: {e!s}"
 
             raw_output += f"-{file}: {output}\n\n"
 

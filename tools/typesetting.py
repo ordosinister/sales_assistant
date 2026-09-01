@@ -5,15 +5,13 @@ using LLM-generated layout instructions.
 """
 
 from textwrap import dedent
-from typing import List
 
 from langchain.tools import BaseTool, ToolRuntime
-from langchain_core.runnables import Runnable
 from langchain_core.output_parsers import PydanticOutputParser, StrOutputParser
+from langchain_core.runnables import Runnable
 from pydantic import BaseModel, Field
 
-from context import build_standard_chat_prompt_template, Context
-
+from context import Context, build_standard_chat_prompt_template
 
 TYPESETTING_SYSTEM_PROMPT = dedent("""
 # Role
@@ -72,7 +70,7 @@ class ContentInputs(BaseModel):
         images: List of images with filenames and captions.
         text: Report body text to format.
     """
-    images: List[Image] = Field(description="要包含在報告中的圖片列表，每個圖片包含檔案名稱和說明文字")
+    images: list[Image] = Field(description="要包含在報告中的圖片列表，每個圖片包含檔案名稱和說明文字")
     text: str = Field(description="報告的文字內容")
 
 

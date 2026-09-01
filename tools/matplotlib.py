@@ -8,15 +8,13 @@ import io
 import os
 from contextlib import redirect_stdout
 from textwrap import dedent
-from typing import List
 
 from langchain.tools import BaseTool, ToolRuntime
-from langchain_core.runnables import Runnable
 from langchain_core.output_parsers import PydanticOutputParser, StrOutputParser
+from langchain_core.runnables import Runnable
 from pydantic import BaseModel, Field
 
-from context import build_standard_chat_prompt_template, Context
-
+from context import Context, build_standard_chat_prompt_template
 
 MATPLOTLIB_SYSTEM_PROMPT = dedent("""
 # Role
@@ -94,7 +92,7 @@ class DataInputs(BaseModel):
         tasks: List of visualization tasks with filenames and descriptions.
         context: Data content to visualize (from pandas_tool or schema_tool).
     """
-    tasks: List[Task] = Field(description="視覺化的任務。包含圖片檔案名稱和需要完成的任務")
+    tasks: list[Task] = Field(description="視覺化的任務。包含圖片檔案名稱和需要完成的任務")
     context: str = Field(description="需要進行視覺化的數據")
 
 
@@ -191,10 +189,9 @@ Generates data visualizations (charts, plots, graphs) using Python and matplotli
         stdout_capture = io.StringIO()
         try:
             with redirect_stdout(stdout_capture):
-                exec(code, exec_globals)
-            output = stdout_capture.getvalue()
-        except Exception as e:
-            output = f"EXECUTION ERROR: {str(e)}"
+                exec(code, exec_globals)  # noqa: S102
+        except Exception as e:  # noqa: BLE001
+            print(f"EXECUTION ERROR: {e!s}")
 
         return tasks
 

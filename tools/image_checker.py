@@ -3,16 +3,14 @@ import base64
 import json
 import os
 from textwrap import dedent
-from typing import List
 
 from langchain.tools import BaseTool, ToolRuntime
 from langchain_core.messages import HumanMessage
-from langchain_core.runnables import Runnable
 from langchain_core.output_parsers import PydanticOutputParser
+from langchain_core.runnables import Runnable
 from pydantic import BaseModel, Field
 
 from context import Context
-
 
 IMAGE_CHECKER_SYSTEM_PROMPT = dedent("""
 # Role
@@ -68,7 +66,7 @@ class ImageCheckResult(BaseModel):
 
 
 class ImageCheckInputs(BaseModel):
-    images: List[ImageCheckItem] = Field(description="要檢查的圖片列表，每個包含檔案名稱與原始任務描述")
+    images: list[ImageCheckItem] = Field(description="要檢查的圖片列表，每個包含檔案名稱與原始任務描述")
 
 
 class ImageCheckerTool(BaseTool):
@@ -152,8 +150,8 @@ Checks generated chart images for visual quality issues. Provide a list of image
 
             try:
                 image_b64 = self._encode_image(full_path)
-            except Exception as e:
-                return self._error_result(file_name, f"無法讀取圖片: {str(e)}", "請確認圖片檔案是否損毀")
+            except OSError as e:
+                return self._error_result(file_name, f"無法讀取圖片: {e!s}", "請確認圖片檔案是否損毀")
 
             mime_type = self._get_mime_type(file_name)
             user_prompt = f"請檢查以下圖片。原始視覺化任務：{task}"
@@ -166,8 +164,8 @@ Checks generated chart images for visual quality issues. Provide a list of image
             try:
                 response = await self.vision_llm.ainvoke([message])
                 result_text = response.content if hasattr(response, 'content') else str(response)
-            except Exception as e:
-                return self._error_result(file_name, f"視覺檢查失敗: {str(e)}", "請重新生成圖片後再次檢查")
+            except Exception as e:  # noqa: BLE001
+                return self._error_result(file_name, f"視覺檢查失敗: {e!s}", "請重新生成圖片後再次檢查")
 
             return self._parse_response(result_text, file_name)
 

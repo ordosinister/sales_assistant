@@ -8,15 +8,13 @@ import io
 import os
 from contextlib import redirect_stdout
 from textwrap import dedent
-from typing import List
 
 from langchain.tools import BaseTool, ToolRuntime
-from langchain_core.runnables import Runnable
 from langchain_core.output_parsers import PydanticOutputParser, StrOutputParser
+from langchain_core.runnables import Runnable
 from pydantic import BaseModel, Field
 
-from context import build_standard_chat_prompt_template, Context
-
+from context import Context, build_standard_chat_prompt_template
 
 PANDAS_SYSTEM_PROMPT = dedent("""
 # Role
@@ -65,7 +63,7 @@ class FilesInputs(BaseModel):
         files: List of Excel filenames (without directory path) to process.
         user_query: The user's original analysis question in natural language.
     """
-    files: List[str] = Field(
+    files: list[str] = Field(
         description="List of Excel file names to process. Provide the filenames (without directory path) of the data files you want to analyze or transform.")
     user_query: str = Field(
         description="The user's original question or analysis requirement in natural language.")
@@ -158,10 +156,10 @@ Processes specified Excel files using Python and pandas. Provide a list of file 
         stdout_capture = io.StringIO()
         try:
             with redirect_stdout(stdout_capture):
-                exec(code, {"__builtins__": __builtins__})
+                exec(code, {"__builtins__": __builtins__})  # noqa: S102
             output = stdout_capture.getvalue()
-        except Exception as e:
-            output = f"EXECUTION ERROR: {str(e)}"
+        except Exception as e:  # noqa: BLE001
+            output = f"EXECUTION ERROR: {e!s}"
 
         return output
 

@@ -10,8 +10,8 @@ Usage:
 
 import os
 import sys
+from datetime import datetime, timezone
 from textwrap import dedent
-from datetime import datetime
 
 # Fix Windows console encoding for Unicode characters
 if hasattr(sys.stdout, 'reconfigure'):
@@ -21,19 +21,18 @@ if hasattr(sys.stdout, 'reconfigure'):
 os.environ.setdefault('MPLCONFIGDIR', os.path.join(os.path.expanduser('~'), 'AppData', 'Local', 'Temp', 'matplotlib-cache'))
 os.makedirs(os.environ['MPLCONFIGDIR'], exist_ok=True)
 
-from langchain_ollama import ChatOllama
 from langchain.agents import create_agent
 from langchain.agents.middleware.tool_retry import ToolRetryMiddleware
 from langchain_core.messages import HumanMessage
+from langchain_ollama import ChatOllama
 
-from initialization import credential_init
 from context import Context
+from initialization import credential_init
+from tools.image_checker import ImageCheckerTool
 from tools.matplotlib import MatplotlibTool
-from tools.typesetting import TypesettingTool
 from tools.pandas import PandasTool
 from tools.schema import SchemaTool
-from tools.image_checker import ImageCheckerTool
-
+from tools.typesetting import TypesettingTool
 
 credential_init()
 
@@ -108,7 +107,7 @@ agent = create_agent(
 )
 
 
-def invoke(query: str, directory: str = "./data", output_path: str = None):
+def invoke(query: str, directory: str = "./data", output_path: str | None = None):
     """Invoke the analysis agent with a user query.
 
     Creates a runtime Context bound to the given data directory and passes
@@ -160,7 +159,7 @@ def invoke(query: str, directory: str = "./data", output_path: str = None):
 
                     # Resolve output path
                     if output_path is None:
-                        today = datetime.now().strftime("%Y-%m-%d")
+                        today = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
                         output_path = os.path.join(directory, f"Report_{today}.txt")
 
                     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)

@@ -4,7 +4,6 @@ import os
 
 from path import get_file
 
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
