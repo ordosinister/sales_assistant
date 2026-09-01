@@ -10,7 +10,7 @@ Usage:
 
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from textwrap import dedent
 
 # Fix Windows console encoding for Unicode characters
@@ -159,7 +159,7 @@ def invoke(query: str, directory: str = "./data", output_path: str | None = None
 
                     # Resolve output path
                     if output_path is None:
-                        today = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
+                        today = datetime.now(tz=UTC).strftime("%Y-%m-%d")
                         output_path = os.path.join(directory, f"Report_{today}.txt")
 
                     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
@@ -177,7 +177,7 @@ if __name__ == "__main__":
     from textwrap import dedent
 
     config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config", "analysis_requirements.txt")
-    with open(config_path, "r", encoding="utf-8") as f:
+    with open(config_path, encoding="utf-8") as f:
         user_goals = f.read()
 
     user_query = dedent("""
