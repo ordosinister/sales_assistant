@@ -1,0 +1,29 @@
+[tool.black]
+line-length = 150
+target-version = ['py314']
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 150
+target-version = 'py314'
+
+[tool.ruff.lint]
+select = [
+    'E',  # pycodestyle errors
+    'F',  # pyflakes
+    'I',  # isort
+    'UP', # pyupgrade
+]
+ignore = ['E402', 'E501']  # Allow imports after sys.path manipulation and long lines for HTML strings
+
+[tool.ruff.lint.isort]
+known-first-party = ['skills']
+
+[tool.mypy]
+python_version = '3.14'
+ignore_missing_imports = true
+follow_imports = 'silent'
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+check_untyped_defs = false
