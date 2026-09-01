@@ -8,7 +8,9 @@ Usage:
     python run.py "<query>" [directory] [output_path]
 """
 
+import glob
 import os
+import shutil
 import sys
 from datetime import UTC, datetime
 from textwrap import dedent
@@ -202,10 +204,10 @@ if __name__ == "__main__":
 
     output_file = None
 
-   response = invoke(query=user_query, directory=data_dir, output_path=output_file)
-   print(response)
-    import shutil
-    import glob
+    response = invoke(query=user_query, directory=data_dir, output_path=output_file)
+    print(response)
+
+
 
     os.makedirs(data_dir, exist_ok=True)
     for png_file in glob.glob("*.png"):

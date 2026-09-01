@@ -4,7 +4,6 @@ Provides helpers to locate the repository root and resolve relative
 file paths within the project.
 """
 
-import sys
 import os
 from pathlib import Path
 

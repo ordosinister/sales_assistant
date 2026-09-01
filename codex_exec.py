@@ -1,5 +1,4 @@
 ﻿#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Wrapper to launch codex exec with the slideshow report prompt."""
 
 import os
@@ -7,8 +6,6 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from textwrap import dedent
-
 
 PROMPT = """
     # Role & Task
