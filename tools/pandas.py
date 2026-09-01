@@ -63,10 +63,11 @@ class FilesInputs(BaseModel):
         files: List of Excel filenames (without directory path) to process.
         user_query: The user's original analysis question in natural language.
     """
+
     files: list[str] = Field(
-        description="List of Excel file names to process. Provide the filenames (without directory path) of the data files you want to analyze or transform.")
-    user_query: str = Field(
-        description="The user's original question or analysis requirement in natural language.")
+        description="List of Excel file names to process. Provide the filenames (without directory path) of the data files you want to analyze or transform."
+    )
+    user_query: str = Field(description="The user's original question or analysis requirement in natural language.")
 
 
 class PandasTool(BaseTool):
@@ -81,6 +82,7 @@ class PandasTool(BaseTool):
         description: Tool description for the agent.
         pipeline: LLM chain that generates analysis code.
     """
+
     name: str = "pandas_tool"
 
     description_template: str = dedent("""
@@ -115,8 +117,8 @@ Processes specified Excel files using Python and pandas. Provide a list of file 
                     <context>: {context}
                     <user_query>: {user_query}
                 """),
-                "input_variables": ["files", "context", "user_query"]
-            }
+                "input_variables": ["files", "context", "user_query"],
+            },
         }
         pipeline = build_standard_chat_prompt_template(input_) | llm | StrOutputParser()
 
@@ -140,18 +142,14 @@ Processes specified Excel files using Python and pandas. Provide a list of file 
 
         args = input.get("input", input)
 
-        files = args['files']
-        user_query = args['user_query']
+        files = args["files"]
+        user_query = args["user_query"]
 
         # Prepend cached schema output to ensure full schema info is available
         if runtime.context.schema_output:
             context = f"Schema Information:\n{runtime.context.schema_output}\n\n"
 
-        code = self.pipeline.invoke({
-            "files": [os.path.join(directory, f) for f in files],
-            "context": context,
-            "user_query": user_query
-        })
+        code = self.pipeline.invoke({"files": [os.path.join(directory, f) for f in files], "context": context, "user_query": user_query})
 
         stdout_capture = io.StringIO()
         try:

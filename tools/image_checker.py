@@ -156,14 +156,16 @@ Checks generated chart images for visual quality issues. Provide a list of image
             mime_type = self._get_mime_type(file_name)
             user_prompt = f"請檢查以下圖片。原始視覺化任務：{task}"
 
-            message = HumanMessage(content=[
-                {"type": "text", "text": IMAGE_CHECKER_SYSTEM_PROMPT + "\n\n" + user_prompt},
-                {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{image_b64}"}},
-            ])
+            message = HumanMessage(
+                content=[
+                    {"type": "text", "text": IMAGE_CHECKER_SYSTEM_PROMPT + "\n\n" + user_prompt},
+                    {"type": "image_url", "image_url": {"url": f"data:{mime_type};base64,{image_b64}"}},
+                ]
+            )
 
             try:
                 response = await self.vision_llm.ainvoke([message])
-                result_text = response.content if hasattr(response, 'content') else str(response)
+                result_text = response.content if hasattr(response, "content") else str(response)
             except Exception as e:  # noqa: BLE001
                 return self._error_result(file_name, f"視覺檢查失敗: {e!s}", "請重新生成圖片後再次檢查")
 

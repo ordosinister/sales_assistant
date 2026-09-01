@@ -52,6 +52,7 @@ Step 5: [排版檢查] 檢查報告的排版是否美觀、圖片位置是否合
 Step 6: [最終輸出] 輸出完整的 Markdown 報告，不含任何格式包裝
 """)
 
+
 class Image(BaseModel):
     """An image to include in the report.
 
@@ -59,6 +60,7 @@ class Image(BaseModel):
         file_name: Image filename (e.g. "chart.png").
         caption: Descriptive caption displayed below the image.
     """
+
     file_name: str = Field(description="圖片的檔案名稱")
     caption: str = Field(description="圖片的說明文字，用於在報告中顯示在圖片下方作為圖說")
 
@@ -70,6 +72,7 @@ class ContentInputs(BaseModel):
         images: List of images with filenames and captions.
         text: Report body text to format.
     """
+
     images: list[Image] = Field(description="要包含在報告中的圖片列表，每個圖片包含檔案名稱和說明文字")
     text: str = Field(description="報告的文字內容")
 
@@ -85,8 +88,9 @@ class TypesettingTool(BaseTool):
         description: Tool description for the agent.
         pipeline: LLM chain that generates the formatted report.
     """
+
     name: str = "typesetting_tool"
-    
+
     # return_direct: bool = True
     description_template: str = dedent("""
 Generates a well-formatted report by combining text content with images. Provide a list of images (each with a file name and caption) and the report text. The tool will intelligently arrange images within the text to create a structured, readable report in Markdown format. Use this tool when you need to create a report that integrates both textual content and visual elements.
@@ -119,8 +123,8 @@ Generates a well-formatted report by combining text content with images. Provide
                     <images>: {images}
                     <text>: {text}
                 """),
-                "input_variables": ["images", "text"]
-            }
+                "input_variables": ["images", "text"],
+            },
         }
         pipeline = build_standard_chat_prompt_template(input_) | llm | StrOutputParser()
 
@@ -142,8 +146,8 @@ Generates a well-formatted report by combining text content with images. Provide
         """
         args = input.get("input", input)
 
-        images = args['images']
-        text = args['text']
+        images = args["images"]
+        text = args["text"]
 
         # Prepend cached outputs to ensure full context is available
         parts = []
@@ -154,10 +158,12 @@ Generates a well-formatted report by combining text content with images. Provide
         if parts:
             text = "\n\n".join(parts) + f"\n\nReport Text:\n{text}"
 
-        output = self.pipeline.invoke({
-            "text": text,
-            "images": images,
-        })
+        output = self.pipeline.invoke(
+            {
+                "text": text,
+                "images": images,
+            }
+        )
 
         return output
 

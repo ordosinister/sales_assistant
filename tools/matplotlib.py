@@ -74,6 +74,7 @@ Step 5: [驗證檢查] 檢查代碼是否僅包含必要的 import 與執行語�
 Step 6: [整合輸出] 輸出純 Python 代碼字串，不含任何格式包裝
 """)
 
+
 class Task(BaseModel):
     """A single visualization task specification.
 
@@ -81,6 +82,7 @@ class Task(BaseModel):
         file_name: Output image filename (e.g. "chart.png").
         task: Description of the visualization to create.
     """
+
     file_name: str = Field(description="圖片的檔案名稱")
     task: str = Field(description="需要完成的任務")
 
@@ -92,6 +94,7 @@ class DataInputs(BaseModel):
         tasks: List of visualization tasks with filenames and descriptions.
         context: Data content to visualize (from pandas_tool or schema_tool).
     """
+
     tasks: list[Task] = Field(description="視覺化的任務。包含圖片檔案名稱和需要完成的任務")
     context: str = Field(description="需要進行視覺化的數據")
 
@@ -108,6 +111,7 @@ class MatplotlibTool(BaseTool):
         description: Tool description for the agent.
         pipeline: LLM chain that generates visualization code.
     """
+
     name: str = "matplotlib_tool"
 
     description_template: str = dedent("""
@@ -141,8 +145,8 @@ Generates data visualizations (charts, plots, graphs) using Python and matplotli
                     <tasks>: {tasks}
                     <context>: {context}
                 """),
-                "input_variables": ["tasks", "context"]
-            }
+                "input_variables": ["tasks", "context"],
+            },
         }
         pipeline = build_standard_chat_prompt_template(input_) | llm | StrOutputParser()
 
@@ -164,8 +168,8 @@ Generates data visualizations (charts, plots, graphs) using Python and matplotli
 
         args = input.get("input", input)
 
-        tasks = args['tasks']
-        context = args['context']
+        tasks = args["tasks"]
+        context = args["context"]
 
         # Prepend cached outputs to ensure full context is available
         parts = []
@@ -176,13 +180,15 @@ Generates data visualizations (charts, plots, graphs) using Python and matplotli
         if parts:
             context = "\n\n".join(parts) + f"\n\nVisualization Request:\n{context}"
 
-        code = self.pipeline.invoke({
-            "tasks": tasks,
-            "context": context,
-        })
+        code = self.pipeline.invoke(
+            {
+                "tasks": tasks,
+                "context": context,
+            }
+        )
 
         # Ensure matplotlib uses non-interactive backend and has a writable cache dir
-        mpl_cache = os.path.join(os.path.expanduser('~'), 'AppData', 'Local', 'Temp', 'matplotlib-cache')
+        mpl_cache = os.path.join(os.path.expanduser("~"), "AppData", "Local", "Temp", "matplotlib-cache")
         os.makedirs(mpl_cache, exist_ok=True)
         exec_globals = {"__builtins__": __builtins__, "MPLCONFIGDIR": mpl_cache}
 

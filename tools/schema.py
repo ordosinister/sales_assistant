@@ -63,6 +63,7 @@ class SchemaTool(BaseTool):
         description: Tool description for the agent.
         pipeline: LLM chain that generates schema analysis code.
     """
+
     name: str = "schema_tool"
     description: str = dedent("""
     Reads all Excel files in a given directory and returns the schema (structure summary) and first 5 rows of each sheet. Uses pandas to analyze Excel files, providing sheet names, column names, data types, non-null counts, and sample data. Use this tool when you need to understand the structure and content of data files before further processing.
@@ -87,8 +88,8 @@ class SchemaTool(BaseTool):
                 "template": dedent("""
                     <file>: {file}
                 """),
-                "input_variable": ["file"]
-            }
+                "input_variable": ["file"],
+            },
         }
         pipeline = build_standard_chat_prompt_template(input_) | llm | StrOutputParser()
 
@@ -119,9 +120,7 @@ class SchemaTool(BaseTool):
 
             file = os.path.join(directory, f)
 
-            code = self.pipeline.invoke({
-                "file": file
-            })
+            code = self.pipeline.invoke({"file": file})
 
             stdout_capture = io.StringIO()
             try:

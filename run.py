@@ -14,12 +14,12 @@ from datetime import UTC, datetime
 from textwrap import dedent
 
 # Fix Windows console encoding for Unicode characters
-if hasattr(sys.stdout, 'reconfigure'):
-    sys.stdout.reconfigure(encoding='utf-8')
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
 # Fix matplotlib cache directory permissions in sandboxed environments
-os.environ.setdefault('MPLCONFIGDIR', os.path.join(os.path.expanduser('~'), 'AppData', 'Local', 'Temp', 'matplotlib-cache'))
-os.makedirs(os.environ['MPLCONFIGDIR'], exist_ok=True)
+os.environ.setdefault("MPLCONFIGDIR", os.path.join(os.path.expanduser("~"), "AppData", "Local", "Temp", "matplotlib-cache"))
+os.makedirs(os.environ["MPLCONFIGDIR"], exist_ok=True)
 
 from langchain.agents import create_agent
 from langchain.agents.middleware.tool_retry import ToolRetryMiddleware
@@ -81,20 +81,18 @@ AGENT_INSTRUCTION = dedent("""
 """)
 
 
-llm = ChatOllama(model='deepseek-v4-pro:cloud',
-                 base_url='https://ollama.com',
-                 name='main', temperature=0)
+llm = ChatOllama(model="deepseek-v4-pro:cloud", base_url="https://ollama.com", name="main", temperature=0)
 
 # Vision-capable LLM for image checking (use a vision model like llava, gemma3, or minicpm-v)
-vision_llm = ChatOllama(model='kimi-k2.6:cloud',
-                 base_url='https://ollama.com',
-                 name='vision', temperature=0)
+vision_llm = ChatOllama(model="kimi-k2.6:cloud", base_url="https://ollama.com", name="vision", temperature=0)
 
-tools = [SchemaTool.create(llm=llm),
-         PandasTool.create(llm=llm),
-         MatplotlibTool.create(llm=llm),
-         TypesettingTool.create(llm=llm),
-         ImageCheckerTool.create(vision_llm=vision_llm)]
+tools = [
+    SchemaTool.create(llm=llm),
+    PandasTool.create(llm=llm),
+    MatplotlibTool.create(llm=llm),
+    TypesettingTool.create(llm=llm),
+    ImageCheckerTool.create(vision_llm=vision_llm),
+]
 
 agent = create_agent(
     model=llm,
@@ -103,7 +101,7 @@ agent = create_agent(
     system_prompt=AGENT_INSTRUCTION,
     middleware=[
         ToolRetryMiddleware(max_retries=2),
-    ]
+    ],
 )
 
 
@@ -127,16 +125,14 @@ def invoke(query: str, directory: str = "./data", output_path: str | None = None
     """
     context = Context(directory=directory)
 
-    agent_input = {
-        "messages": HumanMessage(content=query)
-    }
+    agent_input = {"messages": HumanMessage(content=query)}
 
     final_content = ""
 
     for update in agent.stream(
-            agent_input,
-            context=context,
-            stream_mode="updates",
+        agent_input,
+        context=context,
+        stream_mode="updates",
     ):
         for key, value in update.items():
             if key == "model":
@@ -146,14 +142,14 @@ def invoke(query: str, directory: str = "./data", output_path: str | None = None
                     print(f"{key}: ", content, tool_calls)
                 except UnicodeEncodeError:
                     # Fallback for Windows cp950 console
-                    print(f"{key}: ", content.encode('utf-8', errors='replace').decode('utf-8'), tool_calls)
+                    print(f"{key}: ", content.encode("utf-8", errors="replace").decode("utf-8"), tool_calls)
                 # Track the latest model output as the final answer
                 final_content = content
             if key == "tools":
                 try:
                     print(f"{key}: ", value["messages"][0].content, value["messages"][0].name)
                 except UnicodeEncodeError:
-                    print(f"{key}: ", value["messages"][0].content.encode('utf-8', errors='replace').decode('utf-8'), value["messages"][0].name)
+                    print(f"{key}: ", value["messages"][0].content.encode("utf-8", errors="replace").decode("utf-8"), value["messages"][0].name)
 
                 if value["messages"][0].name == "typesetting_tool":
 
@@ -165,7 +161,7 @@ def invoke(query: str, directory: str = "./data", output_path: str | None = None
                     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
 
                     with open(output_path, "w", encoding="utf-8") as f:
-                        f.write(value['messages'][0].content)
+                        f.write(value["messages"][0].content)
 
                     print(f"Report saved to: {output_path}")
 

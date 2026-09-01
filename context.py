@@ -22,6 +22,7 @@ class Context(BaseModel):
         schema_output: Cached schema analysis result (populated at runtime).
         pandas_output: Cached pandas analysis result (populated at runtime).
     """
+
     directory: str
     schema_output: str = ""
     pandas_output: str = ""
@@ -44,8 +45,8 @@ def build_standard_chat_prompt_template(kwargs):
     """
     messages = []
 
-    if 'system' in kwargs:
-        content = kwargs.get('system')
+    if "system" in kwargs:
+        content = kwargs.get("system")
 
         # allow list of prompts for multimodal
         if isinstance(content, list):
@@ -56,8 +57,8 @@ def build_standard_chat_prompt_template(kwargs):
         message = SystemMessagePromptTemplate(prompt=prompts)
         messages.append(message)
 
-    if 'human' in kwargs:
-        content = kwargs.get('human')
+    if "human" in kwargs:
+        content = kwargs.get("human")
 
         # allow list of prompts for multimodal
         if isinstance(content, list):

@@ -37,7 +37,7 @@ def credential_init():
 
     credentials = configparser.ConfigParser()
     credentials.read(credential_file)
-    os.environ["OLLAMA_API_KEY"] = credentials['ollama'].get('api_key')
+    os.environ["OLLAMA_API_KEY"] = credentials["ollama"].get("api_key")
 
 
 if __name__ == "__main__":
@@ -46,8 +46,6 @@ if __name__ == "__main__":
 
     credential_init()
 
-    llm = ChatOllama(model='deepseek-v4-pro:cloud',
-                     base_url='https://ollama.com',
-                     name='main', temperature=0)
+    llm = ChatOllama(model="deepseek-v4-pro:cloud", base_url="https://ollama.com", name="main", temperature=0)
 
     print(llm.invoke("Hello"))
