@@ -207,8 +207,6 @@ if __name__ == "__main__":
     response = invoke(query=user_query, directory=data_dir, output_path=output_file)
     print(response)
 
-
-
     os.makedirs(data_dir, exist_ok=True)
     for png_file in glob.glob("*.png"):
         dest = os.path.join(data_dir, os.path.basename(png_file))

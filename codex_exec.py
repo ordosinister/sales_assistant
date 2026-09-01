@@ -115,10 +115,7 @@ def find_codex() -> str:
         if cand.exists():
             return str(cand)
 
-    raise FileNotFoundError(
-        "Could not locate 'codex' executable. "
-        "Please ensure it is installed (e.g. via npm install -g codex) and on your PATH."
-    )
+    raise FileNotFoundError("Could not locate 'codex' executable. " "Please ensure it is installed (e.g. via npm install -g codex) and on your PATH.")
 
 
 def main():
@@ -128,13 +125,16 @@ def main():
 
     cmd = [
         codex_path,
-        "--ask-for-approval", "never",
+        "--ask-for-approval",
+        "never",
         "exec",
         "--skip-git-repo-check",
         "--local-provider=ollama",
         "--oss",
-        "-m", "kimi-k2.6:cloud",
-        "--sandbox", "danger-full-access",
+        "-m",
+        "kimi-k2.6:cloud",
+        "--sandbox",
+        "danger-full-access",
         "--ephemeral",
     ]
 
