@@ -11,11 +11,16 @@ echo   Sales Assistant - First-Time Setup
 echo ============================================================
 echo.
 
-REM --- Check if already set up ---
+REM --- Check Python + pip ---
 if exist "python\python.exe" (
-    echo [OK] Embedded Python already found: %CD%\python\python.exe
-    echo.
-    goto :install_deps
+    if exist "python\Scripts\pip.exe" (
+        echo [OK] Embedded Python + pip already found.
+        echo.
+        goto :install_deps
+    ) else (
+        echo [WARN] python.exe found but pip is missing. Re-installing pip...
+        goto :install_pip
+    )
 )
 
 REM --- Download embedded Python ---
@@ -50,7 +55,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM --- Install pip ---
+:install_pip
 echo [INSTALL] pip...
 python\python.exe python\get-pip.py
 if errorlevel 1 (
