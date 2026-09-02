@@ -37,7 +37,11 @@ def run_script(script_name: str, *args) -> str:
 
 def main():
     parser = argparse.ArgumentParser(description="Sales Analysis Workflow")
-    parser.add_argument("target_usd", type=float, help="Target annual revenue in USD")
+    parser.add_argument(
+        "target_usd",
+        type=float,
+        help="Target annual revenue in USD (e.g. 1200000 for .2M)",
+    )
     parser.add_argument(
         "--keep-temp", action="store_true", help="Keep intermediate HTML/XLSX files"
     )

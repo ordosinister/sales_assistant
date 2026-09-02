@@ -1,6 +1,5 @@
 ﻿#!/usr/bin/env python3
 """Read analysis Excel and generate self-contained HTML report with Chart.js."""
-
 import argparse
 import json
 from datetime import datetime
@@ -17,7 +16,8 @@ COLORS = {
     "border": "rgba(30,43,250,0.2)",
 }
 
-PALETTE = ["#1e2bfa", "#3b4bfa", "#5a6cfb", "#7a8dfc", "#9aaeff", "#baccff"]
+# High-contrast diverse palette for doughnut chart
+DOUGHNUT_PALETTE = ["#FF6B35", "#F7C548", "#6A994E", "#1D3557", "#E63946", "#457B9D"]
 
 
 def fmt_num(v, decimals=0):
@@ -28,7 +28,7 @@ def fmt_num(v, decimals=0):
         if decimals == 0 or f == int(f):
             return f"{int(f):,}"
         return f"{f:,.{decimals}f}"
-    except ValueError, TypeError:
+    except (ValueError, TypeError):
         return str(v)
 
 
@@ -120,7 +120,7 @@ def build_html(xlsx_path: str) -> str:
                 try:
                     float(v)
                     html += f'<td class="num">{fmt_num(v, 0 if float(v) == int(float(v)) else 2)}</td>'
-                except ValueError, TypeError:
+                except (ValueError, TypeError):
                     html += f"<td>{v}</td>"
             html += "</tr>"
         html += "</tbody></table></div>"
@@ -132,7 +132,7 @@ def build_html(xlsx_path: str) -> str:
     t4 = table_from_df(s4)
     t5 = table_from_df(s5)
 
-    ind_palette = json.dumps(PALETTE[: len(ind_labels)])
+    ind_palette = json.dumps(DOUGHNUT_PALETTE[: len(ind_labels)])
 
     html = f"""
 <!DOCTYPE html>
@@ -164,7 +164,7 @@ tbody tr:nth-child(odd) {{ background: {COLORS["bg"]}; }}
 .num {{ text-align: right; font-variant-numeric: tabular-nums; }}
 .chart-container {{ max-width: 520px; margin: 14px auto; padding-left: 35px; page-break-inside: avoid; }}
 .chart-unit {{ font-size: 11px; color: {COLORS["text_muted"]}; text-align: center; margin-top: 4px; }}
-h2, .section-header {{ page-break-before: always; }}
+.page-break {{ page-break-before: always; }}
 table, .chart-container, .card {{ page-break-inside: avoid; }}
 @media (max-width: 560px) {{ .kpi-grid {{ grid-template-columns: 1fr 1fr; }} }}
 </style>
@@ -182,36 +182,40 @@ table, .chart-container, .card {{ page-break-inside: avoid; }}
 <div class="kpi"><div class="kpi-value">{rate:.2f}%</div><div class="kpi-label">Achievement Rate</div></div>
 </div>
 
-<div class="section-header">1. Revenue Achievement Rate</div>
+<div class="section-header page-break">1. Revenue Achievement Rate</div>
 <div class="section-body">
 {t1}
 <div class="chart-container"><canvas id="chartA"></canvas></div>
 <div class="chart-unit">Unit: {a_unit}</div>
 </div>
 
-<div class="section-header">2. Year-over-Year Comparison ({year_prev} vs {year_curr})</div>
+<div class="section-header page-break">2. Year-over-Year Comparison ({year_prev} vs {year_curr})</div>
 <div class="section-body">
 {t2}
 <div class="chart-container"><canvas id="chartB"></canvas></div>
 <div class="chart-unit">Unit: {b_unit}</div>
 </div>
 
-<div class="section-header">3. Top 5 End Customers ({year_curr})</div>
+<div class="section-header page-break">3. Top 5 End Customers ({year_curr})</div>
 <div class="section-body">
 {t3}
 <div class="chart-container"><canvas id="chartC"></canvas></div>
 <div class="chart-unit">Unit: {c_unit}</div>
 </div>
 
-<div class="section-header">4. Top 5 Industries and End Customers ({year_curr})</div>
+<div class="section-header page-break">4. Top 5 Industries and End Customers ({year_curr})</div>
+<div class="section-body">{t4}</div>
+
+<div class="section-header page-break">4. Top 5 Industries — Chart</div>
 <div class="section-body">
-{t4}
 <div class="chart-container"><canvas id="chartD"></canvas></div>
 </div>
 
-<div class="section-header">5. Product Category Summary ({year_curr})</div>
+<div class="section-header page-break">5. Product Category Summary ({year_curr})</div>
+<div class="section-body">{t5}</div>
+
+<div class="section-header page-break">5. Product Category Summary — Chart</div>
 <div class="section-body">
-{t5}
 <div class="chart-container"><canvas id="chartE"></canvas></div>
 <div class="chart-unit">Unit: {e_unit}</div>
 </div>
