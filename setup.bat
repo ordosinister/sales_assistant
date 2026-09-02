@@ -74,8 +74,8 @@ del python\get-pip.py >nul 2>&1
 REM ==================== DEPENDENCIES ====================
 :install_deps
 echo.
-echo [INSTALL] Python packages from requirements.txt...
-python\Scripts\pip.exe install -r requirements.txt
+echo [INSTALL] Workflow dependencies (pandas, openpyxl, playwright)...
+python\Scripts\pip.exe install pandas openpyxl playwright
 if errorlevel 1 (
     echo [ERROR] Package installation failed.
     pause
