@@ -2,7 +2,7 @@
 
 on:
   push:
-    branches: [main, dev, ci_cd]
+    branches:
   pull_request:
 
 jobs:

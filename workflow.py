@@ -12,6 +12,7 @@ Usage:
     python workflow.py <target_usd>
     python workflow.py 1200000
 """
+
 import argparse
 import os
 import subprocess
@@ -42,9 +43,7 @@ def main():
         type=float,
         help="Target annual revenue in USD (e.g. 1200000 for .2M)",
     )
-    parser.add_argument(
-        "--keep-temp", action="store_true", help="Keep intermediate HTML/XLSX files"
-    )
+    parser.add_argument("--keep-temp", action="store_true", help="Keep intermediate HTML/XLSX files")
     args = parser.parse_args()
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
