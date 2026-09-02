@@ -26,7 +26,7 @@ def fmt_num(v, decimals=0):
         return ""
     try:
         f = float(v)
-        if decimals == 0 or f == int(f):
+        if decimals == 0:
             return f"{int(f):,}"
         return f"{f:,.{decimals}f}"
     except ValueError, TypeError:
@@ -120,7 +120,7 @@ def build_html(xlsx_path: str) -> str:
                 v = val if val is not None else ""
                 try:
                     float(v)
-                    html += f'<td class="num">{fmt_num(v, 0 if float(v) == int(float(v)) else 2)}</td>'
+                    html += f'<td class="num">{fmt_num(v, 2)}</td>'
                 except ValueError, TypeError:
                     html += f"<td>{v}</td>"
             html += "</tr>"
