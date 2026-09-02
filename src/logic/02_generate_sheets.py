@@ -133,6 +133,7 @@ def generate_sheets(input_path: str, output_path: str, target_usd: float):
         .reset_index()
     )
     sheet5.columns = ["Product Type", "Total Qty", "Total USD"]
+    sheet5 = sheet5.sort_values("Total USD", ascending=False).reset_index(drop=True)
 
     with pd.ExcelWriter(output_path, engine="openpyxl") as writer:
         sheet1.to_excel(writer, sheet_name="Revenue Achievement", index=False)
