@@ -159,7 +159,7 @@ def invoke(query: str, directory: str = "./data", output_path: str | None = None
                     # Resolve output path
                     if output_path is None:
                         settings_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config", "report_settings.json")
-                        with open(settings_path, "r", encoding="utf-8-sig") as sf:
+                        with open(settings_path, encoding="utf-8-sig") as sf:
                             settings = json.load(sf)
                         pattern = settings.get("report_txt_input", "Report_%Y-%m-%d.txt")
                         filename = datetime.now(tz=UTC).strftime(pattern)
@@ -206,7 +206,7 @@ if __name__ == "__main__":
     """).format(goals=user_goals)
 
     settings_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config", "report_settings.json")
-    with open(settings_path, "r", encoding="utf-8-sig") as sf:
+    with open(settings_path, encoding="utf-8-sig") as sf:
         settings = json.load(sf)
     data_dir = settings.get("pdf_output_dir", "./data")
 
