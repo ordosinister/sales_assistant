@@ -18,10 +18,12 @@ if exist "python\python.exe" (
         echo.
         goto :install_deps
     ) else (
-        echo [WARN] python.exe found but pip is missing. Re-installing pip...
-        goto :install_pip
+        echo [WARN] python.exe found but pip is missing.
+        goto :ensure_getpip
     )
 )
+
+REM ==================== FIRST-TIME INSTALL ====================
 
 REM --- Download embedded Python ---
 echo [DOWNLOAD] Python 3.14.7 embedded...
@@ -47,6 +49,7 @@ echo [CONFIG] Enabling pip support...
 powershell -NoProfile -ExecutionPolicy Bypass -Command "[System.IO.File]::WriteAllLines('python\python314._pth', @('python314.zip', '.', '', 'import site'), [System.Text.Encoding]::ASCII)"
 
 REM --- Download get-pip.py ---
+:ensure_getpip
 echo [DOWNLOAD] get-pip.py...
 powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile 'python\get-pip.py' -UseBasicParsing"
 if errorlevel 1 (
@@ -55,7 +58,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-:install_pip
+REM --- Install pip ---
 echo [INSTALL] pip...
 python\python.exe python\get-pip.py
 if errorlevel 1 (
@@ -68,6 +71,7 @@ REM --- Cleanup ---
 del python_tmp.zip >nul 2>&1
 del python\get-pip.py >nul 2>&1
 
+REM ==================== DEPENDENCIES ====================
 :install_deps
 echo.
 echo [INSTALL] Python packages from requirements.txt...
