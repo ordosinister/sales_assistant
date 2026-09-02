@@ -26,7 +26,7 @@ def fmt_num(v, decimals=0):
         return ""
     try:
         f = float(v)
-        if decimals == 0 or f == int(f):
+        if decimals == 0:
             return f"{int(f):,}"
         return f"{f:,.{decimals}f}"
     except ValueError, TypeError:
