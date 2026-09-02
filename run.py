@@ -9,6 +9,7 @@ Usage:
 """
 
 import glob
+import json
 import os
 import shutil
 import sys
@@ -157,8 +158,12 @@ def invoke(query: str, directory: str = "./data", output_path: str | None = None
 
                     # Resolve output path
                     if output_path is None:
-                        today = datetime.now(tz=UTC).strftime("%Y-%m-%d")
-                        output_path = os.path.join(directory, f"Report_{today}.txt")
+                        settings_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config", "report_settings.json")
+                        with open(settings_path, encoding="utf-8-sig") as sf:
+                            settings = json.load(sf)
+                        pattern = settings.get("report_txt_input", "Report_%Y-%m-%d.txt")
+                        filename = datetime.now(tz=UTC).strftime(pattern)
+                        output_path = os.path.join(directory, filename)
 
                     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
 
@@ -200,7 +205,10 @@ if __name__ == "__main__":
     
     """).format(goals=user_goals)
 
-    data_dir = "./data"
+    settings_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config", "report_settings.json")
+    with open(settings_path, encoding="utf-8-sig") as sf:
+        settings = json.load(sf)
+    data_dir = settings.get("pdf_output_dir", "./data")
 
     output_file = None
 
