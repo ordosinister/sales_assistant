@@ -39,7 +39,7 @@ if errorlevel 1 (
 
 REM --- Enable pip ---
 echo [CONFIG] Enabling pip support...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Content -Path 'python\python314._pth' -Value \"python314.zip\n.\n\nimport site\" -Encoding ASCII"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[System.IO.File]::WriteAllLines('python\python314._pth', @('python314.zip', '.', '', 'import site'), [System.Text.Encoding]::ASCII)"
 
 REM --- Download get-pip.py ---
 echo [DOWNLOAD] get-pip.py...
@@ -83,7 +83,6 @@ if errorlevel 1 (
 echo.
 echo ============================================================
 echo   SETUP COMPLETE
-
 echo   Python: %CD%\python\python.exe
 echo   You can now run: workflow.bat
 echo ============================================================

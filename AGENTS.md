@@ -66,3 +66,24 @@ When the user asks for a `setup.bat` that installs Python dependencies, **always
 ### Reference Implementation
 
 See `setup.bat` in this repo for the canonical implementation.
+
+### Known Pitfall: Writing `python314._pth` with Newlines
+
+Embedded Python requires a `.pth` file with proper line breaks:
+
+```
+python314.zip
+.
+
+import site
+```
+
+**NEVER** use `Set-Content -Value "python314.zip\n.\n\nimport site"` from PowerShell (or a batch calling PowerShell with that string), because `\n` will be written as literal characters instead of actual newlines. This causes a fatal `ModuleNotFoundError: No module named 'encodings'`.
+
+**Correct approach** in a batch file:
+
+```batch
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[System.IO.File]::WriteAllLines('python\python314._pth', @('python314.zip', '.', '', 'import site'), [System.Text.Encoding]::ASCII)"
+```
+
+This uses the .NET `WriteAllLines` method, which handles actual line breaks correctly and produces a valid `.pth` file.

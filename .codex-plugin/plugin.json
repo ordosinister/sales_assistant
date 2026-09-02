@@ -1,0 +1,6 @@
+{
+  "name": "repo-local",
+  "version": "1.0.0",
+  "description": "Local plugin for CSR analysis workflows",
+  "skills": "./skills/"
+}
