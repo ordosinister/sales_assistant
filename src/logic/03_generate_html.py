@@ -120,7 +120,7 @@ def build_html(xlsx_path: str) -> str:
                 v = val if val is not None else ""
                 try:
                     float(v)
-                    html += f'<td class="num">{fmt_num(v, 0 if float(v) == int(float(v)) else 2)}</td>'
+                    html += f'<td class="num">{fmt_num(v, 2)}</td>'
                 except ValueError, TypeError:
                     html += f"<td>{v}</td>"
             html += "</tr>"
