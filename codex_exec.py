@@ -61,8 +61,7 @@ def find_codex() -> str:
         if cand.exists():
             return str(cand)
 
-    raise FileNotFoundError(
-        "Could not locate 'codex' executable. " "Please ensure it is installed (e.g. via npm install -g codex) and on your PATH.")
+    raise FileNotFoundError("Could not locate 'codex' executable. " "Please ensure it is installed (e.g. via npm install -g codex) and on your PATH.")
 
 
 def main():
@@ -107,6 +106,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
