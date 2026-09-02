@@ -8,3 +8,5 @@ config/credentials.ini
 
 # Data directory
 data/
+
+.idea/
