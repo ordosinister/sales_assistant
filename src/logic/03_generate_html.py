@@ -73,7 +73,7 @@ def build_html(xlsx_path: str) -> str:
 
     s3 = sheets["Top 5 Customers"]
     s4 = sheets["Top 5 Industries"]
-    s5 = sheets["Product Summary"]
+    s5 = sheets["Product Summary"].sort_values("Total USD", ascending=False).reset_index(drop=True)
 
     chart_a_data = [actual, target]
     chart_a_labels = [f"Actual (Jan-{period_label})", "Target"]
