@@ -1,0 +1,5 @@
+{
+    "report_txt_input": "Report_%Y-%m-%d.txt",
+    "pdf_output_dir": "./data",
+    "keep_temp_files": false
+}
